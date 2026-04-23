@@ -1,0 +1,770 @@
+/* ═══════════════════════════════════════════════════════════════
+   style.css  —  HealthSaathi AI Health Companion
+   Author  : Senior SWE (Google / Microsoft style)
+   Version : 2.0
+   Sections:
+     1. CSS Custom Properties (Design Tokens)
+     2. Reset & Base
+     3. Typography Helpers
+     4. Layout — App Shell
+     5. Header
+     6. Bottom Navigation
+     7. Cards & Surfaces
+     8. Buttons
+     9. Upload Zone & File Input
+    10. Section Titles
+    11. Tab Pills & Tab Content
+    12. Home Page
+    13. Analyze Page
+    14. Result Page
+    15. History Page
+    16. Chat Page
+    17. Prescription Page
+    18. Settings Page
+    19. Overlays (API Key + Critical Alert)
+    20. Utility classes
+    21. Animations & Keyframes
+    22. Elder Mode overrides
+    23. Responsive (narrow screens)
+═══════════════════════════════════════════════════════════════ */
+
+
+/* ─────────────────────────────────────────────
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+───────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg:          #07090f;
+  --surface:     #0e1320;
+  --card:        #111827;
+
+  /* Borders */
+  --border:      #1c2a40;
+  --border-light:#243348;
+
+  /* Brand Accent — teal-green */
+  --accent:      #10d9a0;
+  --accent-dim:  rgba(16, 217, 160, 0.12);
+  --accent-glow: rgba(16, 217, 160, 0.30);
+
+  /* Blue */
+  --blue:        #3b9eff;
+  --blue-dim:    rgba(59, 158, 255, 0.12);
+
+  /* Danger / Red */
+  --danger:      #ff4d6d;
+  --danger-dim:  rgba(255, 77, 109, 0.15);
+
+  /* Warning / Amber */
+  --warn:        #f59e0b;
+  --warn-dim:    rgba(245, 158, 11, 0.15);
+
+  /* Safe / Green */
+  --safe:        #22c55e;
+  --safe-dim:    rgba(34, 197, 94, 0.15);
+
+  /* Purple */
+  --purple:      #a78bfa;
+  --purple-dim:  rgba(167, 139, 250, 0.15);
+
+  /* Orange */
+  --orange:      #fb923c;
+  --orange-dim:  rgba(251, 146, 60, 0.12);
+
+  /* Text */
+  --text:        #e8f0fe;
+  --muted:       #6b7ea0;
+  --dim:         #2a3a52;
+
+  /* Spacing */
+  --radius-sm:   10px;
+  --radius-md:   14px;
+  --radius-lg:   20px;
+  --radius-xl:   24px;
+  --radius-pill: 50px;
+
+  /* Font */
+  --font-main:   'Sora', sans-serif;
+  --font-hindi:  'Tiro Devanagari Hindi', serif;
+}
+
+
+/* ─────────────────────────────────────────────
+   2. RESET & BASE
+───────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:   var(--bg);
+  color:        var(--text);
+  font-family:  var(--font-main);
+  min-height:   100vh;
+  overflow-x:   hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 4px; }
+
+a { color: inherit; }
+button { font-family: var(--font-main); }
+
+
+/* ─────────────────────────────────────────────
+   3. TYPOGRAPHY HELPERS
+───────────────────────────────────────────── */
+.accent-text  { color: var(--accent); }
+.blue-text    { color: var(--blue); }
+.purple-text  { color: var(--purple); }
+.orange-text  { color: var(--orange); }
+.danger-text  { color: var(--danger); }
+.safe-text    { color: var(--safe); }
+.muted-text   { color: var(--muted); }
+.dim-text     { color: var(--dim); }
+
+.hindi-text {
+  font-family: var(--font-hindi);
+  line-height: 1.9;
+}
+
+
+/* ─────────────────────────────────────────────
+   4. LAYOUT — APP SHELL
+───────────────────────────────────────────── */
+#app {
+  max-width:  520px;
+  margin:     0 auto;
+  padding:    0 14px 90px; /* bottom padding for nav */
+}
+
+.page {
+  display:   none;
+  animation: fadeUp 0.3s ease;
+}
+.page.active {
+  display: block;
+}
+
+.spacer-sm { height: 16px; }
+.spacer-xs { height: 10px; }
+
+
+/* ─────────────────────────────────────────────
+   5. HEADER
+───────────────────────────────────────────── */
+#header {
+  position:         sticky;
+  top:              0;
+  z-index:          100;
+  background:       rgba(14, 19, 32, 0.95);
+  backdrop-filter:  blur(20px);
+  border-bottom:    1px solid var(--border);
+  padding:          12px 14px;
+}
+
+.header-inner {
+  max-width:      520px;
+  margin:         0 auto;
+  display:        flex;
+  justify-content: space-between;
+  align-items:    center;
+}
+
+.logo {
+  display:     flex;
+  align-items: center;
+  gap:         10px;
+}
+.logo-icon { font-size: 26px; }
+.logo-text { font-weight: 800; font-size: 18px; color: var(--accent); line-height: 1; }
+.logo-sub  { font-size: 9px;  color: var(--muted); margin-top: 2px; }
+
+/* Language switcher in header */
+.lang-switcher {
+  display:       flex;
+  gap:           4px;
+  background:    var(--bg);
+  border-radius: 24px;
+  padding:       3px;
+}
+.lang-btn {
+  padding:       5px 11px;
+  border-radius: 20px;
+  border:        none;
+  cursor:        pointer;
+  font-weight:   700;
+  font-size:     11px;
+  transition:    all 0.2s;
+  background:    transparent;
+  color:         var(--muted);
+}
+.lang-btn.active {
+  background: var(--accent);
+  color:      var(--bg);
+}
+
+
+/* ─────────────────────────────────────────────
+   6. BOTTOM NAVIGATION
+───────────────────────────────────────────── */
+#bottom-nav {
+  position:         fixed;
+  bottom:           0;
+  left:             0;
+  right:            0;
+  z-index:          200;
+  background:       rgba(14, 19, 32, 0.97);
+  border-top:       1px solid var(--border);
+  display:          flex;
+  justify-content:  space-around;
+  padding:          8px 0 14px;
+  backdrop-filter:  blur(20px);
+}
+
+.nav-btn {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            3px;
+  background:     none;
+  border:         none;
+  cursor:         pointer;
+  color:          var(--muted);
+  padding:        0 6px;
+  min-width:      44px;
+  font-size:      9px;
+  font-weight:    700;
+  transition:     color 0.2s;
+}
+.nav-icon { font-size: 22px; transition: all 0.2s; }
+
+.nav-btn.active          { color: var(--accent); }
+.nav-btn.active .nav-icon {
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+
+/* ─────────────────────────────────────────────
+   7. CARDS & SURFACES
+───────────────────────────────────────────── */
+.card {
+  background:    var(--card);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       20px;
+  margin-bottom: 14px;
+}
+
+.surface {
+  background:    var(--surface);
+  border-radius: var(--radius-md);
+  padding:       14px;
+}
+
+
+/* ─────────────────────────────────────────────
+   8. BUTTONS
+───────────────────────────────────────────── */
+/* Primary CTA */
+.btn-primary {
+  display:       block;
+  width:         100%;
+  background:    linear-gradient(135deg, var(--accent), #00a8ff);
+  border:        none;
+  color:         var(--bg);
+  font-weight:   800;
+  font-size:     16px;
+  padding:       15px;
+  border-radius: var(--radius-pill);
+  cursor:        pointer;
+  transition:    all 0.2s;
+  box-shadow:    0 4px 20px var(--accent-glow);
+}
+.btn-primary:hover    { transform: translateY(-2px); box-shadow: 0 8px 28px var(--accent-glow); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* Small buttons */
+.btn-sm {
+  padding:       8px 18px;
+  border-radius: 30px;
+  border:        none;
+  cursor:        pointer;
+  font-weight:   700;
+  font-size:     13px;
+  transition:    all 0.2s;
+}
+
+/* Voice button */
+.btn-voice {
+  background:    var(--danger-dim);
+  border:        1.5px solid var(--danger);
+  color:         var(--danger);
+  border-radius: 24px;
+  padding:       8px 16px;
+  cursor:        pointer;
+  font-weight:   700;
+  font-size:     13px;
+  transition:    all 0.2s;
+}
+.btn-voice.active {
+  animation: pulse 1s infinite;
+}
+
+/* Clear button */
+.btn-clear {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  color:         var(--muted);
+  border-radius: 24px;
+  padding:       8px 14px;
+  cursor:        pointer;
+  font-size:     13px;
+}
+
+/* Accent outline */
+.btn-accent-outline {
+  width:         100%;
+  background:    var(--accent-dim);
+  border:        1px solid var(--accent);
+  color:         var(--accent);
+  border-radius: var(--radius-md);
+  padding:       11px;
+  cursor:        pointer;
+  font-weight:   700;
+  font-size:     13px;
+  margin-top:    8px;
+}
+
+/* Danger outline */
+.btn-danger-outline {
+  width:         100%;
+  background:    var(--danger-dim);
+  border:        1px solid rgba(255, 77, 109, 0.3);
+  color:         var(--danger);
+  border-radius: var(--radius-md);
+  padding:       13px;
+  cursor:        pointer;
+  font-weight:   700;
+  font-size:     13px;
+}
+
+/* Danger solid */
+.btn-danger-solid {
+  display:          block;
+  background:       var(--danger);
+  color:            #fff;
+  font-weight:      800;
+  text-align:       center;
+  padding:          14px;
+  border-radius:    var(--radius-pill);
+  text-decoration:  none;
+  font-size:        15px;
+}
+
+/* Blue outline */
+.btn-blue-outline {
+  display:          block;
+  background:       var(--surface);
+  color:            var(--blue);
+  border:           1px solid var(--blue);
+  font-weight:      700;
+  text-align:       center;
+  padding:          12px;
+  border-radius:    var(--radius-pill);
+  text-decoration:  none;
+  font-size:        13px;
+}
+
+/* Ghost button */
+.btn-ghost {
+  background:  transparent;
+  border:      none;
+  color:       var(--muted);
+  cursor:      pointer;
+  font-size:   13px;
+  padding:     8px;
+}
+
+/* Icon round button */
+.btn-icon-round {
+  background:    var(--surface);
+  border:        1px solid var(--border);
+  color:         var(--muted);
+  border-radius: 50%;
+  width:         44px;
+  height:        44px;
+  flex-shrink:   0;
+  cursor:        pointer;
+  font-size:     18px;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+}
+.btn-send {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-weight: 800;
+}
+
+/* Listen buttons */
+.btn-listen {
+  padding:       8px 14px;
+  border-radius: 24px;
+  border:        1px solid;
+  cursor:        pointer;
+  font-weight:   700;
+  font-size:     12px;
+}
+.blue-listen   { background: var(--blue-dim);   color: var(--blue);   border-color: var(--blue);   }
+.purple-listen { background: var(--purple-dim); color: var(--purple); border-color: var(--purple); }
+
+/* WhatsApp share */
+.btn-wa {
+  display:          inline-flex;
+  align-items:      center;
+  gap:              6px;
+  background:       rgba(37, 211, 102, 0.12);
+  border:           1px solid rgba(37, 211, 102, 0.4);
+  color:            #25D366;
+  border-radius:    24px;
+  padding:          8px 16px;
+  cursor:           pointer;
+  font-weight:      700;
+  font-size:        13px;
+  text-decoration:  none;
+}
+
+/* Result page outline buttons */
+.accent-outline-btn {
+  background:  var(--accent-dim);
+  border:      1px solid var(--accent);
+  color:       var(--accent);
+  padding:     12px 20px;
+}
+.purple-outline-btn {
+  background:  var(--purple-dim);
+  border:      1px solid var(--purple);
+  color:       var(--purple);
+  padding:     12px 20px;
+}
+
+
+/* ─────────────────────────────────────────────
+   9. UPLOAD ZONE & FILE INPUT
+───────────────────────────────────────────── */
+.upload-zone {
+  border:        2px dashed var(--border);
+  border-radius: 18px;
+  padding:       30px 20px;
+  text-align:    center;
+  background:    var(--surface);
+  transition:    all 0.25s;
+  position:      relative;
+}
+.upload-zone.dragover {
+  border-color: var(--accent);
+  background:   var(--accent-dim);
+}
+.upload-zone-icon  { font-size: 44px; margin-bottom: 12px; }
+.upload-zone-label { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+.upload-hint       { font-size: 11px; color: var(--dim); margin-top: 10px; }
+
+/* Hindi label — hidden by default, shown by JS */
+.upload-label-hindi { display: none; font-family: var(--font-hindi); }
+
+/*
+  FILE INPUT TRICK:
+  The <input type="file"> is positioned on top of .file-btn with full
+  width/height but opacity:0. So clicking the visible green button
+  actually clicks the real file input — browser opens the file picker.
+*/
+.file-input-wrapper {
+  position: relative;
+  display:  inline-block;
+}
+.file-input-wrapper input[type="file"] {
+  position:       absolute;
+  inset:          0;
+  width:          100%;
+  height:         100%;
+  opacity:        0;
+  cursor:         pointer;
+  font-size:      0;    /* hides any text in some browsers */
+}
+.file-btn {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             8px;
+  background:      linear-gradient(135deg, var(--accent), #00a8ff);
+  color:           var(--bg);
+  font-weight:     800;
+  font-size:       15px;
+  padding:         12px 28px;
+  border-radius:   var(--radius-pill);
+  cursor:          pointer;
+  box-shadow:      0 4px 16px var(--accent-glow);
+  pointer-events:  none;  /* clicks fall through to the real input */
+  user-select:     none;
+}
+
+/* File info bar that appears after selection */
+.file-selected {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  background:    var(--accent-dim);
+  border:        1px solid rgba(16, 217, 160, 0.3);
+  border-radius: var(--radius-md);
+  padding:       12px 16px;
+  margin-top:    14px;
+}
+.file-selected-tick    { font-size: 22px; }
+.file-selected-details { flex: 1; }
+.file-selected-name    { color: var(--accent); font-weight: 700; font-size: 13px; }
+.file-selected-meta    { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.file-clear {
+  background:  transparent;
+  border:      none;
+  color:       var(--muted);
+  cursor:      pointer;
+  font-size:   18px;
+  line-height: 1;
+  padding:     2px 6px;
+}
+
+
+/* ─────────────────────────────────────────────
+   10. SECTION TITLES
+───────────────────────────────────────────── */
+.section-title {
+  display:       flex;
+  align-items:   center;
+  gap:           10px;
+  margin-bottom: 16px;
+}
+.section-title-icon { font-size: 22px; }
+.section-title-en   { font-weight: 700; font-size: 17px; color: var(--text); }
+.section-title-hi   { font-size: 13px; color: var(--muted); font-family: var(--font-hindi); line-height: 1.5; }
+
+
+/* ─────────────────────────────────────────────
+   11. TAB PILLS & TAB CONTENT
+───────────────────────────────────────────── */
+.tab-pills {
+  display:       flex;
+  gap:           8px;
+  margin-bottom: 18px;
+  flex-wrap:     wrap;
+}
+.result-tab-pills {
+  overflow-x: auto;
+  flex-wrap:  nowrap;
+}
+
+.tab-pill {
+  padding:       8px 18px;
+  border-radius: 30px;
+  border:        1px solid var(--border);
+  background:    transparent;
+  color:         var(--muted);
+  cursor:        pointer;
+  font-weight:   700;
+  font-size:     13px;
+  transition:    all 0.2s;
+  white-space:   nowrap;
+}
+.tab-pill.active {
+  background:  var(--accent);
+  color:       var(--bg);
+  border-color: var(--accent);
+  box-shadow:  0 0 10px var(--accent-glow);
+}
+
+.tab-content        { display: none; }
+.tab-content.active { display: block; animation: fadeUp 0.25s ease; }
+
+
+/* ─────────────────────────────────────────────
+   12. HOME PAGE
+───────────────────────────────────────────── */
+/* Welcome banner */
+.welcome-banner {
+  background:  linear-gradient(135deg, #0d1a2e, #0e1a35);
+  position:    relative;
+  overflow:    hidden;
+  margin-bottom: 14px;
+}
+.welcome-glow {
+  position:     absolute;
+  top:          -40px;
+  right:        -40px;
+  width:        160px;
+  height:       160px;
+  border-radius: 50%;
+  background:   var(--accent-dim);
+  filter:       blur(40px);
+  pointer-events: none;
+}
+.welcome-icon  { font-size: 28px; margin-bottom: 8px; }
+.welcome-title { font-weight: 800; font-size: 20px; margin-bottom: 4px; }
+.welcome-sub   { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* Quick grid */
+.quick-grid {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   12px;
+  margin-bottom:         16px;
+}
+.quick-btn {
+  border-radius:  18px;
+  padding:        18px 12px;
+  cursor:         pointer;
+  text-align:     center;
+  border:         1px solid transparent;
+  background:     none;
+  transition:     all 0.2s;
+  width:          100%;
+}
+.quick-btn:hover       { transform: translateY(-2px); }
+.quick-btn-icon        { font-size: 28px; margin-bottom: 8px; }
+.quick-btn-label       { font-size: 12px; font-weight: 700; line-height: 1.4; }
+
+/* Card colour variants */
+.accent-card  { background: var(--accent-dim);  border-color: rgba(16,  217, 160, 0.20); }
+.blue-card    { background: var(--blue-dim);    border-color: rgba(59,  158, 255, 0.20); }
+.purple-card  { background: var(--purple-dim);  border-color: rgba(167, 139, 250, 0.20); }
+.orange-card  { background: var(--orange-dim);  border-color: rgba(251, 146,  60, 0.20); }
+
+/* Motivational quote */
+.motivation-card {
+  background:    linear-gradient(135deg, #1a2540, #1e1a35);
+  border:        1px solid rgba(167, 139, 250, 0.20);
+  border-radius: 18px;
+  padding:       18px;
+  position:      relative;
+  overflow:      hidden;
+  margin-bottom: 14px;
+}
+.motivation-card::before {
+  content:    '';
+  position:   absolute;
+  top:        0; left: 0; right: 0;
+  height:     3px;
+  background: linear-gradient(90deg, var(--accent), var(--purple), var(--danger));
+}
+.motivation-label   { font-size: 12px; color: var(--purple); font-weight: 700; margin-bottom: 8px; }
+.motivation-text-en { font-size: 13px; line-height: 1.7; }
+.motivation-text-hi { font-size: 13px; color: #c4b5fd; font-family: var(--font-hindi); line-height: 1.9; margin-top: 5px; }
+
+/* Emergency strip */
+.emergency-strip {
+  background:    var(--danger-dim);
+  border:        1px solid rgba(255, 77, 109, 0.25);
+  border-radius: 16px;
+  padding:       14px 16px;
+  display:       flex;
+  align-items:   center;
+  gap:           12px;
+}
+.emergency-icon  { font-size: 26px; }
+.emergency-info  { flex: 1; }
+.emergency-title { font-weight: 700; font-size: 13px; color: var(--danger); }
+.emergency-sub   { font-size: 11px; color: var(--muted); }
+.emergency-call-btn {
+  background:      var(--danger);
+  color:           #fff;
+  font-weight:     800;
+  padding:         8px 16px;
+  border-radius:   30px;
+  text-decoration: none;
+  font-size:       13px;
+}
+
+
+/* ─────────────────────────────────────────────
+   13. ANALYZE PAGE
+───────────────────────────────────────────── */
+.text-input {
+  width:         100%;
+  background:    var(--surface);
+  border:        1.5px solid var(--border);
+  color:         var(--text);
+  border-radius: 16px;
+  padding:       14px;
+  font-size:     14px;
+  outline:       none;
+  resize:        vertical;
+  line-height:   1.7;
+  transition:    border-color 0.2s;
+}
+.text-input.focused { border-color: var(--accent); }
+
+.voice-row {
+  display:    flex;
+  gap:        8px;
+  margin-top: 10px;
+  flex-wrap:  wrap;
+}
+
+.error-bar {
+  background:    var(--danger-dim);
+  border:        1px solid rgba(255, 77, 109, 0.3);
+  border-radius: var(--radius-sm);
+  padding:       12px 16px;
+  color:         var(--danger);
+  font-size:     13px;
+  margin-top:    14px;
+}
+
+.loading-box {
+  text-align: center;
+  padding:    32px 0;
+  color:      var(--muted);
+}
+.loading-emoji { font-size: 36px; }
+.loading-label { font-size: 14px; margin-top: 12px; }
+
+
+/* ─────────────────────────────────────────────
+   14. RESULT PAGE
+───────────────────────────────────────────── */
+.result-top-row {
+  display:       flex;
+  gap:           14px;
+  margin-bottom: 16px;
+  align-items:   stretch;
+}
+
+.score-card {
+  min-width:       120px;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     center;
+  justify-content: center;
+  padding:         16px;
+}
+/* Animated arc — transition set via JS setAttribute */
+#score-arc { transition: stroke-dasharray 1s ease; }
+.score-label { font-size: 11px; font-weight: 700; text-align: center; margin-top: 4px; }
+
+.status-card { flex: 1; padding: 16px; }
+.status-badge   { font-weight: 800; font-size: 14px; margin-bottom: 8px; }
+.status-summary { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.listen-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+
+
