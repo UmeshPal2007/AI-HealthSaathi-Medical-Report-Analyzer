@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>HealthSaathi 🩺 AI Health Companion</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Tiro+Devanagari+Hindi&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════ -->
+  <header id="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🩺</span>
+        <div>
+          <div class="logo-text">HealthSaathi</div>
+          <div class="logo-sub">AI Health Companion</div>
+        </div>
+      </div>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn"        onclick="setLang('hi')">HI</button>
+        <button class="lang-btn"        onclick="setLang('both')">दो</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN APP CONTAINER
+  ═══════════════════════════════════════════ -->
+  <main id="app">
+
+    <!-- ─────────────────────────────────────────
+         PAGE: HOME
+    ───────────────────────────────────────── -->
+    <section id="page-home" class="page active">
+      <div class="spacer-sm"></div>
+
+      <!-- Welcome Banner -->
+      <div class="card welcome-banner">
+        <div class="welcome-glow"></div>
+        <div class="welcome-icon">🩺</div>
+        <h1 class="welcome-title" id="home-title">Welcome to HealthSaathi</h1>
+        <p class="welcome-sub" id="home-sub">Your AI-powered health companion</p>
+      </div>
+
+      <!-- Quick Action Grid -->
+      <div class="quick-grid">
+        <button class="quick-btn accent-card" onclick="goPage('analyze')">
+          <div class="quick-btn-icon">🔬</div>
+          <div class="quick-btn-label accent-text" id="qa-analyze">Analyze Report</div>
+        </button>
+        <button class="quick-btn blue-card" onclick="goPage('rx')">
+          <div class="quick-btn-icon">💊</div>
+          <div class="quick-btn-label blue-text" id="qa-rx">Scan Prescription</div>
+        </button>
+        <button class="quick-btn purple-card" onclick="goPage('history')">
+          <div class="quick-btn-icon">📊</div>
+          <div class="quick-btn-label purple-text" id="qa-history">View History</div>
+        </button>
+        <button class="quick-btn orange-card" onclick="goPage('chat')">
+          <div class="quick-btn-icon">💬</div>
+          <div class="quick-btn-label orange-text" id="qa-chat">Ask AI</div>
+        </button>
+      </div>
+
+      <!-- Motivational Quote -->
+      <div class="motivation-card">
+        <div class="motivation-label">✨ <span id="mot-label">Today's Motivation</span></div>
+        <div id="mot-en" class="motivation-text-en"></div>
+        <div id="mot-hi" class="motivation-text-hi"></div>
+      </div>
+
+      <!-- Emergency Strip -->
+      <div class="emergency-strip">
+        <span class="emergency-icon">🆘</span>
+        <div class="emergency-info">
+          <div class="emergency-title" id="emr-label">Medical Emergency?</div>
+          <div class="emergency-sub"   id="emr-sub">Call 112 immediately</div>
+        </div>
+        <a href="tel:112" class="emergency-call-btn">112</a>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         PAGE: ANALYZE
+    ───────────────────────────────────────── -->
+    <section id="page-analyze" class="page">
+      <div class="spacer-sm"></div>
+
+      <div class="section-title">
+        <span class="section-title-icon">🔬</span>
+        <div>
+          <div class="section-title-en" id="ana-title">Analyze Report</div>
+          <div class="section-title-hi" id="ana-title-hi">रिपोर्ट जांचें</div>
+        </div>
+      </div>
+
+      <!-- Upload / Type Tab Pills -->
+      <div class="tab-pills">
+        <button class="tab-pill active" id="tab-upload-btn" onclick="switchTab('upload')">📤 Upload File</button>
+        <button class="tab-pill"        id="tab-type-btn"   onclick="switchTab('type')">⌨️ Type Values</button>
+      </div>
+
+      <!-- Tab: Upload -->
+      <div class="tab-content active" id="tab-upload">
+        <div
+          class="upload-zone"
+          id="upload-zone"
+          ondragover="event.preventDefault(); this.classList.add('dragover')"
+          ondragleave="this.classList.remove('dragover')"
+          ondrop="handleDrop(event, 'report')"
+        >
+          <div class="upload-zone-icon">📋</div>
+          <div class="upload-zone-label" id="upload-label-en">Blood test, X-Ray, any medical report</div>
+          <div class="upload-zone-label upload-label-hindi" id="upload-label-hi">रक्त परीक्षण, एक्स-रे, कोई भी चिकित्सा रिपोर्ट</div>
+
+          <!-- Real file input overlaid on styled button — this is what opens the file picker -->
+          <div class="file-input-wrapper">
+            <input
+              type="file"
+              id="report-file-input"
+              accept=".pdf,image/*"
+              onchange="handleFileSelect(event, 'report')"
+            />
+            <div class="file-btn">📂 <span id="choose-file-label">Choose File</span></div>
+          </div>
+
+          <div class="upload-hint">PDF · JPG · PNG · Any format</div>
+        </div>
+
+        <!-- Selected File Info -->
+        <div id="report-file-info" class="file-selected" style="display:none">
+          <span class="file-selected-tick">✅</span>
+          <div class="file-selected-details">
+            <div class="file-selected-name" id="report-file-name">—</div>
+            <div class="file-selected-meta" id="report-file-meta">—</div>
+          </div>
+          <button class="file-clear" onclick="clearFile('report')" aria-label="Remove file">✕</button>
+        </div>
+      </div>
+
+      <!-- Tab: Type -->
+      <div class="tab-content" id="tab-type">
+        <textarea
+          id="report-text"
+          class="text-input"
+          rows="6"
+          placeholder="Type report values here… e.g. Hemoglobin 9.5, Blood Sugar 180, Creatinine 1.8"
+          onfocus="this.classList.add('focused')"
+          onblur="this.classList.remove('focused')"
+        ></textarea>
+        <div class="voice-row">
+          <button class="btn-voice" id="voice-btn" onclick="toggleVoice('report-text')">🎤 Speak</button>
+          <button class="btn-clear" onclick="document.getElementById('report-text').value=''">🗑️ Clear</button>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div id="analyze-error" class="error-bar" style="display:none"></div>
+
+      <div class="spacer-sm"></div>
+      <button class="btn-primary" id="analyze-btn" onclick="runAnalysis()">🔍 Explain My Report</button>
+
+      <!-- Loading -->
+      <div id="analyze-loading" class="loading-box" style="display:none">
+        <div class="loading-emoji spin">⚕️</div>
+        <div class="loading-label" id="analyzing-label">AI is reading your report…</div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         PAGE: RESULT
+    ───────────────────────────────────────── -->
+    <section id="page-result" class="page">
+      <div class="spacer-sm"></div>
+
+      <!-- Score + Status Row -->
+      <div class="result-top-row">
+        <!-- Health Score Ring (SVG drawn by JS) -->
+        <div class="card score-card">
+          <svg id="score-ring" width="100" height="100" viewBox="0 0 100 100" aria-label="Health Score">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border)" stroke-width="9"/>
+            <circle
+              id="score-arc"
+              cx="50" cy="50" r="42"
+              fill="none"
+              stroke="var(--accent)"
+              stroke-width="9"
+              stroke-dasharray="0 264"
+              stroke-linecap="round"
+              transform="rotate(-90 50 50)"
+            />
+            <text id="score-num" x="50" y="46" text-anchor="middle" fill="var(--accent)" font-size="22" font-weight="800" font-family="Sora">—</text>
+            <text x="50" y="60" text-anchor="middle" fill="var(--muted)" font-size="9" font-family="Sora">/ 100</text>
+          </svg>
+          <div id="score-label" class="score-label"></div>
+        </div>
+
+        <!-- Status Card -->
+        <div class="card status-card">
+          <div id="result-status-badge" class="status-badge"></div>
+          <div id="result-summary-short" class="status-summary"></div>
+          <div class="listen-row">
+            <button class="btn-listen blue-listen"   onclick="speakText('en')">🔊 EN</button>
+            <button class="btn-listen purple-listen"  onclick="speakText('hi')">🔊 HI</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Section Tabs -->
+      <div class="tab-pills result-tab-pills">
+        <button class="tab-pill active" onclick="switchResultTab(this,'rtab-summary')">📝 <span class="rtab-label" data-en="Summary" data-hi="सारांश">Summary</span></button>
+        <button class="tab-pill"        onclick="switchResultTab(this,'rtab-params')">🧪 <span class="rtab-label" data-en="Results"  data-hi="परिणाम">Results</span></button>
+        <button class="tab-pill"        onclick="switchResultTab(this,'rtab-risks')">⚠️ <span class="rtab-label" data-en="Risks"    data-hi="जोखिम">Risks</span></button>
+        <button class="tab-pill"        onclick="switchResultTab(this,'rtab-advice')">🌿 <span class="rtab-label" data-en="Advice"   data-hi="सलाह">Advice</span></button>
+      </div>
+
+      <!-- Tab: Summary -->
+      <div id="rtab-summary" class="tab-content active">
+        <div id="summary-en-box" class="surface summary-box">
+          <div class="summary-lang-label accent-text">🇬🇧 English</div>
+          <p id="summary-en-text"></p>
+        </div>
+        <div id="summary-hi-box" class="surface summary-box">
+          <div class="summary-lang-label purple-text">🇮🇳 हिंदी</div>
+          <p id="summary-hi-text" class="hindi-text"></p>
+        </div>
+        <div class="action-row">
+          <a href="#" class="btn-wa" onclick="shareWhatsApp(); return false;">📲 WhatsApp</a>
+          <button class="btn-listen blue-listen"  onclick="speakText('en')">🔊 Listen EN</button>
+          <button class="btn-listen purple-listen" onclick="speakText('hi')">🔊 सुनें HI</button>
+        </div>
+        <div id="doctor-advice-box" class="card doctor-box" style="display:none">
+          <div class="doctor-title">👨‍⚕️ <span id="doc-label">When to See a Doctor</span></div>
+          <p id="doc-advice-en"></p>
+          <p id="doc-advice-hi" class="hindi-text danger-text"></p>
+        </div>
+      </div>
+
+      <!-- Tab: Parameters -->
+      <div id="rtab-params" class="tab-content">
+        <div id="params-container"></div>
+      </div>
+
+      <!-- Tab: Risks -->
+      <div id="rtab-risks" class="tab-content">
+        <div id="risks-container"></div>
+      </div>
+
+      <!-- Tab: Advice -->
+      <div id="rtab-advice" class="tab-content">
+        <div id="advice-container"></div>
+        <div id="followup-box" class="followup-box" style="display:none">
+          <div class="followup-title blue-text" id="fq-label">💬 AI wants to ask you</div>
+          <div id="followup-questions"></div>
+        </div>
+      </div>
+
+      <!-- Result Action Buttons -->
+      <div class="result-action-row">
+        <button class="btn-sm accent-outline-btn" onclick="goPage('analyze')">+ New Report</button>
+        <button class="btn-sm purple-outline-btn" onclick="goPage('chat')">💬 Ask AI</button>
+      </div>
+
+      <p class="disclaimer">
+        ⚠️ For educational purposes only. Always consult a qualified doctor.<br>
+        <span class="hindi-text dim-text">केवल जानकारी के लिए। चिकित्सा निर्णय के लिए डॉक्टर से मिलें।</span>
+      </p>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         PAGE: HISTORY
+    ───────────────────────────────────────── -->
+    <section id="page-history" class="page">
+      <div class="spacer-sm"></div>
+      <div class="section-title">
+        <span class="section-title-icon">📊</span>
+        <div>
+          <div class="section-title-en" id="hist-title">Health History</div>
+          <div class="section-title-hi">स्वास्थ्य इतिहास</div>
+        </div>
+      </div>
+      <div id="history-container"></div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         PAGE: CHAT
+    ───────────────────────────────────────── -->
+    <section id="page-chat" class="page">
+      <div class="spacer-sm"></div>
+      <div class="section-title">
+        <span class="section-title-icon">💬</span>
+        <div>
+          <div class="section-title-en">AI Health Chat</div>
+          <div class="section-title-hi">AI स्वास्थ्य चैट</div>
+        </div>
+      </div>
+
+      <div id="chat-messages" class="chat-messages"></div>
+
+      <div class="chat-input-row">
+        <button
+          id="chat-voice-btn"
+          class="btn-icon-round"
+          onclick="toggleVoice('chat-input')"
+          aria-label="Voice input"
+        >🎤</button>
+        <input
+          id="chat-input"
+          class="chat-text-input"
+          type="text"
+          placeholder="Type or speak your question…"
+          onkeydown="if(event.key==='Enter') sendChat()"
+        />
+        <button class="btn-icon-round btn-send" onclick="sendChat()" aria-label="Send">➤</button>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         PAGE: PRESCRIPTION (Rx)
+    ───────────────────────────────────────── -->
+    <section id="page-rx" class="page">
+      <div class="spacer-sm"></div>
+      <div class="section-title">
+        <span class="section-title-icon">💊</span>
+        <div>
+          <div class="section-title-en">Prescription Scanner</div>
+          <div class="section-title-hi">दवाई पर्चा स्कैनर</div>
+        </div>
+      </div>
+      <p class="page-sub" id="rx-sub">Upload your prescription — AI will explain every medicine in simple language.</p>
+
+      <div
+        class="upload-zone"
+        ondragover="event.preventDefault(); this.classList.add('dragover')"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleDrop(event, 'rx')"
+      >
+        <div class="upload-zone-icon">💊</div>
+        <div class="upload-zone-label">Doctor's prescription or medicine photo</div>
+
+        <div class="file-input-wrapper">
+          <input
+            type="file"
+            id="rx-file-input"
+            accept="image/*,.pdf"
+            onchange="handleFileSelect(event, 'rx')"
+          />
+          <div class="file-btn">📂 <span>Choose Prescription</span></div>
+        </div>
+        <div class="upload-hint">JPG · PNG · PDF</div>
+      </div>
+
+      <div id="rx-file-info" class="file-selected" style="display:none">
+        <span class="file-selected-tick">✅</span>
+        <div class="file-selected-details">
+          <div class="file-selected-name" id="rx-file-name">—</div>
+          <div class="file-selected-meta" id="rx-file-meta">—</div>
+        </div>
+        <button class="file-clear" onclick="clearFile('rx')" aria-label="Remove file">✕</button>
+      </div>
+
+      <div id="rx-error" class="error-bar" style="display:none"></div>
+
+      <div class="spacer-xs"></div>
+      <button class="btn-primary" id="rx-btn" onclick="runRx()" style="display:none">🔍 Explain Medicines</button>
+
+      <div id="rx-loading" class="loading-box" style="display:none">
+        <div class="loading-emoji spin">💊</div>
+        <div class="loading-label">Reading your prescription…</div>
+      </div>
+
+      <div id="rx-result"></div>
+    </section>
+
+    <!-- ─────────────────────────────────────────
+         PAGE: SETTINGS
+    ───────────────────────────────────────── -->
+    <section id="page-settings" class="page">
+      <div class="spacer-sm"></div>
+      <div class="section-title">
+        <span class="section-title-icon">⚙️</span>
+        <div>
+          <div class="section-title-en">Settings</div>
+          <div class="section-title-hi">सेटिंग</div>
+        </div>
+      </div>
+
+      <!-- Language -->
+      <div class="card settings-card">
+        <div class="settings-label">Language / भाषा</div>
+        <div class="lang-setting-row">
+          <button class="tab-pill active" id="slang-en"   onclick="setLang('en');   updateLangBtns()" style="flex:1">English</button>
+          <button class="tab-pill"        id="slang-hi"   onclick="setLang('hi');   updateLangBtns()" style="flex:1">हिंदी</button>
+          <button class="tab-pill"        id="slang-both" onclick="setLang('both'); updateLangBtns()" style="flex:1">Both</button>
+        </div>
+      </div>
+
+      <!-- Toggles -->
+      <div class="card settings-card">
+        <div class="toggle-row">
+          <div class="toggle-label-wrap">
+            <span class="toggle-icon">👴</span>
+            <div>
+              <div class="toggle-name">Elder Mode</div>
+              <div class="toggle-desc">Larger text &amp; buttons</div>
+            </div>
+          </div>
+          <div class="toggle" id="toggle-elder" onclick="toggleSetting('elder')">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-label-wrap">
+            <span class="toggle-icon">🔒</span>
+            <div>
+              <div class="toggle-name">Privacy Mode</div>
+              <div class="toggle-desc">Don't save reports locally</div>
+            </div>
+          </div>
+          <div class="toggle" id="toggle-privacy" onclick="toggleSetting('privacy')">
+            <div class="toggle-knob"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency Contact -->
+      <div class="card settings-card">
+        <div class="settings-label">Emergency Contact</div>
+        <input
+          type="tel"
+          id="emergency-contact"
+          class="settings-input"
+          placeholder="Emergency phone number"
+          oninput="saveEmergency(this.value)"
+        />
+      </div>
+
+      <!-- API Key -->
+      <div class="card settings-card">
+        <div class="settings-label">🔑 Anthropic API Key</div>
+        <p class="settings-hint">
+          Required to analyze reports. Get yours free at
+          <a href="https://console.anthropic.com" target="_blank" class="blue-link">console.anthropic.com</a>
+        </p>
+        <input
+          type="password"
+          id="settings-apikey-input"
+          class="settings-input"
+          placeholder="sk-ant-api03-…"
+        />
+        <button class="btn-accent-outline" onclick="saveApiKeyFromSettings()">💾 Save API Key</button>
+        <div id="settings-apikey-msg" class="settings-msg"></div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="card settings-card">
+        <div class="settings-label">Quick Links</div>
+        <a href="https://www.google.com/maps/search/hospital+near+me" target="_blank" class="settings-link blue-link-card">
+          🏥 Find Nearby Hospital
+        </a>
+        <a href="https://esanjeevani.mohfw.gov.in/" target="_blank" class="settings-link accent-link-card">
+          💻 Online Doctor (eSanjeevani)
+        </a>
+        <button class="btn-danger-outline" onclick="clearAllData()">🗑️ Clear All Saved Data</button>
+      </div>
+
+      <p class="footer-note">
+        HealthSaathi v2.0 · Google Solution Challenge 2026<br>
+        Built with ❤️ for Bharat · AI-powered by Claude<br>
+        Data stored locally on your device only
+      </p>
+    </section>
+
+  </main><!-- end #app -->
+
+
+  <!-- ═══════════════════════════════════════════
+       API KEY OVERLAY
+  ═══════════════════════════════════════════ -->
+  <div id="apikey-overlay" class="overlay" style="display:none">
+    <div class="overlay-box apikey-box">
+      <div class="overlay-emoji">🔑</
